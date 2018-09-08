@@ -1,4 +1,4 @@
-// Set up chart
+
 var svgWidth = 900  ;
 var svgHeight = 500;
 
@@ -8,7 +8,7 @@ var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
 
 
-// Create an SVG wrapper, append an SVG group that will hold our chart
+
 var svg = d3
     .select(".chart")
     .append("svg")
@@ -17,16 +17,16 @@ var svg = d3
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-// Append and SVG group
+
 var chart = svg.append("g");
 
-// Append a div to the body to create tooltips, assign it a class
+
 d3.select(".chart")
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-// Retrieve data from the CSV file
+
 d3.csv("data/data.csv", function(error, csvdata) {
 
     for (var i = 0; i < csvdata.length; i++){
@@ -40,14 +40,14 @@ d3.csv("data/data.csv", function(error, csvdata) {
         d.healthcare = +d.healthcare;        
     });
 
-    // Create scale functions
+    
     var yLinearScale = d3.scaleLinear()
         .range([height, 0]);
 
     var xLinearScale = d3.scaleLinear()
         .range([0, width]);
 
-    // Create axis functions
+    
     var bottomAxis = d3.axisBottom(xLinearScale);
 
     var leftAxis = d3.axisLeft(yLinearScale);
@@ -65,13 +65,13 @@ d3.csv("data/data.csv", function(error, csvdata) {
             return +d.healthcare * 1.1;
         });
     }
-    // Default x-axis
+    
     var currentAxisLabelX = "poverty";
 
-    // Call findMinAndMax() with 'poverty' as default
+    
     findMinAndMax(currentAxisLabelX);
 
-    // Set the domain of an axis to extend from the min to the max value of the data column
+    
     xLinearScale.domain([xMin, xMax]);
     yLinearScale.domain([0, yMax]);
 
@@ -88,20 +88,20 @@ d3.csv("data/data.csv", function(error, csvdata) {
     chart.call(toolTip);
 
 
-    // Append an SVG group for the x-axis, then display the x-axis
+    
     chart
     .append("g")
     .attr("transform", "translate(0," + height + ")")
-    // The class name assigned here will be used for transition effects
+    
     .attr("class", "x-axis")
     .call(bottomAxis);
 
-    // Append a group for y-axis, then display it
+    
     chart
         .append("g")
         .call(leftAxis);
 
-    // Append y-axis label
+    
     chart    
     .append("text")
     .attr("transform", "rotate(-90)")
@@ -112,7 +112,7 @@ d3.csv("data/data.csv", function(error, csvdata) {
     .attr("data-axis-name", "healthcare")
     .text("Lacks Healthcare(%)");
 
-    // Append x-axis labels
+    
     chart
     .append("text")
     .attr(
@@ -151,113 +151,14 @@ d3.csv("data/data.csv", function(error, csvdata) {
             return d.abbr;
         })
         .attr("class", "circleText")
-        // add listeners on text too since it is on top of circle
+        
         .on("mouseover", function(d) {
           toolTip.show(d);
         })
-        // onmouseout event
+        
         .on("mouseout", function(d, index) {
           toolTip.hide(d);
         });         
 
 });
-
-
-
-
-// var margin = { top: 20, right: 20, bottom: 30, left: 40 },
-//     width = 700 - margin.left - margin.right,
-//     height = 500 - margin.top - margin.bottom;
-
-
-// // LAYOUT ELEMENTS
-// var svg = d3.select("body").append("svg")
-//     .attr("width", width + margin.left + margin.right)
-//     .attr("height", height + margin.top + margin.bottom)
-//     .append("g")
-//     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-// // Define the div for the tooltip
-// var div = d3.select("body").append("div")
-//     .attr("class", "tooltip")
-//     .style("opacity", 0);
-
-
-// d3.csv("data/data.csv")
-//     .then(data => {
-//         // Healthcre vs Poverty
-//         data.forEach(function (d) {
-//             d.healthcare = +d.healthcare;
-//             d.poverty = +d.poverty;
-//             d.income = +d.income;
-//             d.obesity = +d.obesity;
-//         })
-   
-
-//         // This can all be variable 
-//         let obesity_stats = data.map(x => x.obesity)
-//         let poverty_stats = data.map(x => x.poverty)
-
-//         var xScale = d3.scaleLinear()
-//             .domain(d3.extent(obesity_stats))
-//             .range([0, width])
-//         let xAxis = d3.axisBottom(xScale)
-        
-        
-//         var yScale = d3.scaleLinear()
-//             // likely wrong, data is an array does not have this property!
-//             .domain(d3.extent(poverty_stats))
-//             .range([width, 0])
-//         let yAxis = d3.axisLeft(yScale)
-        
-//         // Genreate the X data - DYNAMIC
-//         svg.append("g")
-//             .attr("class", "x axis")
-//             .attr("transform", "translate(1," + height + ")")
-//             .call(xAxis) // could be borked
-//             .append("text")
-//             .attr("class", "label")
-//             .attr("x", width)
-//             .attr("y", -6)
-//             .style("text-anchor", "end")
-//             .style("fill", "black")
-//             .text("HEALTHCARE");
-
-//         svg.append("g")
-//             .attr("class", "y axis")
-//             .call(yAxis)
-//             .append("text")
-//             .attr("class", "label")
-//             .attr("transform", "rotate(-90)")
-//             .attr("y", 6)
-//             .attr("dy", ".71em")
-//             .style("text-anchor", "end")
-//             .style("fill", "black")
-//             .text("POVERTY")
-
-
-//         svg.selectAll(".stateCircle")
-//             .data(data)
-//             .enter()
-//             .append("circle")
-//             .attr("class", "dot")
-//             .attr("r", 3)
-//             .attr("cx", d => xScale(d.obesity)) // Need the scaling here
-//             .attr("cy", d => yScale(d.poverty))
-//             //.style("fill", function (d) { return color(d.species); });
-
-//             .on("mouseover", function (d) {
-//                 div.transition()
-//                     .duration(1000)
-//                     .style("opacity", .9);
-//                 div.html(d.healthcare)
-//                     .style("left", (d3.event.pageX) + "px")
-//                     .style("top", (d3.event.pageY - 28) + "px");
-//             })
-//             .on("mouseout", function (d) {
-//                 div.transition()
-//                     .duration(500)
-//                     .style("opacity", 0);
-//             });
-//     })
 
